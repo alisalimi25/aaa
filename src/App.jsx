@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, ButtonGroup, Col, Grid, Row} from 'react-bootstrap';
+import { Button, ButtonGroup, Grid, Row} from 'react-bootstrap';
 import './App.css';
 
 class App extends Component {
@@ -11,31 +11,67 @@ class App extends Component {
     this.state = {
       items: [
         {
+          bottom: 40,
           color: 'red',
+          height: 10,
           left: 20,
+          right: 50,
           text: 'ddddd',
-          top: 30
+          top: 30,
+          width: 40,
         },
         {
+          bottom: 70,
+          height: 10,
           left: 30,
           color: 'pink',
+          right: 70,
           text: 'eeeeeee',
           top: 60,
+          width: 60
         }
       ]
     };
   }
 
+  componentDidMount = () => {
+    window.addEventListener("orientationchange", () => {
+      alert("the orientation of the device is now " + window.orientation.angle);
+    });
+  }
+
+  renderBox = (item) => {
+    let ratio;
+
+    if (this.imgRef.current != null) {
+      ratio = this.imgRef.current.clientWidth / this.imgRef.current.naturalWidth;
+    } else {
+      ratio = 1;
+    }
+    console.log('ratio is: ', ratio);
+
+    return (
+      <div key={item.text}
+        style={{
+          border: 0.5,
+          borderColor: item.color,
+          borderStyle: 'solid',
+          height: item.height * ratio,
+          left: item.left * ratio,
+          position: 'absolute',
+          top: item.top * ratio,
+          width: item.width * ratio,
+        }}>
+        {item.text}
+      </div>
+    );
+  };
+
   renderBoxes = () => {
     let items = this.state.items;
     return (
       <div>
-        {items.map(item =>
-          <div key={item.text}
-            style={{border: 0.5, position: 'absolute', top: item.top, left: item.left, borderColor: item.color, borderStyle: 'solid'}}>
-            {item.text}
-          </div>
-        )}
+        {items.map(item => this.renderBox(item))}
       </div>
     );
   };
@@ -52,7 +88,9 @@ class App extends Component {
       left: Math.random() * this.imgRef.current.naturalWidth,
       color: 'blue',
       text: left,
-      top: top
+      top: top,
+      height: 10 + Math.random() * 20,
+      width: 40 + Math.random() * 60
     });
 
 
@@ -65,30 +103,12 @@ class App extends Component {
     return (
       <div className="App">
         <Grid>
-          <Row className="show-grid text-left">
-            <Col style={{border: 1, borderStyle: 'solid', borderColor: 'black'}} xs={12} md={3} lg={3}>
-              Item 1
-            </Col>
-            <Col xs={12} md={3} lg={3}>
-              Item 2
-            </Col>
-            <Col xs={12} md={3} lg={3}>
-              Item 3
-            </Col>
-          </Row>
           <Row>
             <div style={{position: 'relative', text: 'center', color: 'white'}}>
               <img alt="" ref={this.imgRef}
                   src="https://travel.usnews.com/static-travel/images/destinations/94/gettyimages-599456588.jpg"
                   className="img-responsive" />
-
               {this.renderBoxes()}
-              <div style={{position: 'absolute', top: 5, left: 5, backgroundColor: 'green'}}>
-                hello hello hello How low
-              </div>
-              <div style={{position: 'absolute', bottom: 5, left: 5, backgroundColor: 'blue'}}>
-                Spirit
-              </div>
             </div>
           </Row>
         </Grid>
