@@ -31,7 +31,8 @@ class App extends Component {
     return (
       <div>
         {items.map(item =>
-          <div style={{border: 0.5, position: 'absolute', top: item.top, left: item.left, borderColor: item.color, borderStyle: 'solid'}}>
+          <div key={item.text}
+            style={{border: 0.5, position: 'absolute', top: item.top, left: item.left, borderColor: item.color, borderStyle: 'solid'}}>
             {item.text}
           </div>
         )}
@@ -41,6 +42,23 @@ class App extends Component {
 
   addBoxes = () => {
     console.log('Image size is: ' + this.imgRef.current.clientWidth + 'x' + this.imgRef.current.clientHeight);
+    console.log('Image Actual is: ' + this.imgRef.current.naturalWidth + 'x' + this.imgRef.current.naturalHeight);
+
+    let ratio = this.imgRef.current.clientWidth / this.imgRef.current.naturalWidth;
+    let left = Math.random() * this.imgRef.current.naturalWidth * ratio;
+    let top = Math.random() * this.imgRef.current.naturalHeight * ratio;
+    let items = this.state.items;
+    let updatedItems = items.concat({
+      left: Math.random() * this.imgRef.current.naturalWidth,
+      color: 'blue',
+      text: left,
+      top: top
+    });
+
+
+    this.setState({
+      items: updatedItems
+    });
   };
 
   render() {
