@@ -9,14 +9,32 @@ class App extends Component {
     this.imgRef = React.createRef();
 
     this.state = {
-      items: []
+      items: [
+        {
+          color: 'red',
+          left: 20,
+          text: 'ddddd',
+          top: 30
+        },
+        {
+          left: 30,
+          color: 'pink',
+          text: 'eeeeeee',
+          top: 60,
+        }
+      ]
     };
   }
 
   renderBoxes = () => {
+    let items = this.state.items;
     return (
-      <div style={{border: 0.5, position: 'absolute', top: 45, left: 20, borderColor: 'red', borderStyle: 'solid'}}>
-        dddddd
+      <div>
+        {items.map(item =>
+          <div style={{border: 0.5, position: 'absolute', top: item.top, left: item.left, borderColor: item.color, borderStyle: 'solid'}}>
+            {item.text}
+          </div>
+        )}
       </div>
     );
   };
