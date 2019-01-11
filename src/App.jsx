@@ -11,67 +11,90 @@ class App extends Component {
     this.state = {
       items: [
         {
-          bottom: 40,
           color: 'red',
-          height: 10,
-          left: 20,
-          right: 50,
+          height: 25,
+          left: 267,
           text: 'ddddd',
-          top: 30,
+          top: 120,
           width: 40,
+          ui: {
+            top: 0,
+            left: 0,
+            width: 0,
+            height: 0
+          }
         },
         {
-          bottom: 70,
-          height: 10,
+          height: 20,
           left: 30,
           color: 'pink',
-          right: 70,
           text: 'eeeeeee',
           top: 60,
-          width: 60
+          width: 60,
+          ui: {
+            top: 0,
+            left: 0,
+            width: 0,
+            height: 0
+          }
         }
-      ]
+      ],
     };
   }
 
-  componentDidMount = () => {
-    window.addEventListener("orientationchange", () => {
-      alert("the orientation of the device is now " + window.orientation.angle);
+  resizeBoxes = () => {
+    let ratio = this.imgRef.current.clientWidth / this.imgRef.current.naturalWidth;
+    console.log('Image ratio is: ', ratio);
+    let items = this.state.items;
+    let enhanced = items.map(item => {
+      let changed = {...item};
+      changed.ui = {
+        top: item.top * ratio,
+        left: item.left * ratio,
+        width: item.width * ratio,
+        height: item.height * ratio
+      }
+      console.log('Changed is: ', changed);
+      return changed;
     });
-  }
 
-  renderBox = (item) => {
-    let ratio;
-
-    if (this.imgRef.current != null) {
-      ratio = this.imgRef.current.clientWidth / this.imgRef.current.naturalWidth;
-    } else {
-      ratio = 1;
-    }
-    console.log('ratio is: ', ratio);
-
-    return (
-      <div key={item.text}
-        style={{
-          border: 0.5,
-          borderColor: item.color,
-          borderStyle: 'solid',
-          height: item.height * ratio,
-          left: item.left * ratio,
-          position: 'absolute',
-          top: item.top * ratio,
-          width: item.width * ratio,
-        }}>
-        {item.text}
-      </div>
-    );
+    this.setState({
+      items: enhanced
+    });
   };
+
+  componentDidMount = () => {
+    console.log('componentDidMount: img: ', this.imgRef.current.clientWidth, 'x', this.imgRef.current.clientHeight);
+    window.addEventListener("resize", () => {
+      setTimeout(() => {
+        console.log('resize: img: ', this.imgRef.current.clientWidth, 'x', this.imgRef.current.clientHeight);
+        this.resizeBoxes();
+      }, 250);
+    });
+
+    this.resizeBoxes();
+  }
 
   renderBoxes = () => {
     let items = this.state.items;
+    console.log('renderBoxes is called');
     return (
       <div>
-        {items.map(item => this.renderBox(item))}
+        {items.map(item =>
+          <div key={item.text}
+            style={{
+              border: 0.5,
+              borderColor: item.color,
+              borderStyle: 'solid',
+              height: item.ui.height,
+              left: item.ui.left,
+              position: 'absolute',
+              top: item.ui.top,
+              width: item.ui.width,
+            }}>
+            {item.text}
+          </div>)
+        }
       </div>
     );
   };
@@ -80,23 +103,25 @@ class App extends Component {
     console.log('Image size is: ' + this.imgRef.current.clientWidth + 'x' + this.imgRef.current.clientHeight);
     console.log('Image Actual is: ' + this.imgRef.current.naturalWidth + 'x' + this.imgRef.current.naturalHeight);
 
-    let ratio = this.imgRef.current.clientWidth / this.imgRef.current.naturalWidth;
-    let left = Math.random() * this.imgRef.current.naturalWidth * ratio;
-    let top = Math.random() * this.imgRef.current.naturalHeight * ratio;
+    let left = Math.random() * this.imgRef.current.naturalWidth;
+    let top = Math.random() * this.imgRef.current.naturalHeight;
     let items = this.state.items;
     let updatedItems = items.concat({
       left: Math.random() * this.imgRef.current.naturalWidth,
       color: 'blue',
-      text: left,
+      text: top,
       top: top,
       height: 10 + Math.random() * 20,
-      width: 40 + Math.random() * 60
+      width: 40 + Math.random() * 60,
+      ui: {
+        top: 0,
+        left: 0,
+        width: 0,
+        height: 0
+      }
     });
 
-
-    this.setState({
-      items: updatedItems
-    });
+    this.setState({items: updatedItems}, this.resizeBoxes);
   };
 
   render() {
@@ -113,11 +138,7 @@ class App extends Component {
           </Row>
         </Grid>
         <section>
-          <ButtonGroup>
-            <Button onClick={this.addBoxes}>Left</Button>
-            <Button>Middle</Button>
-            <Button>Right</Button>
-          </ButtonGroup>
+          <Button onClick={this.addBoxes}>Left</Button>
         </section>
       </div>
     );
