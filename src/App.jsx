@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, ButtonGroup, Grid, Row} from 'react-bootstrap';
+import { Button, Grid, Row} from 'react-bootstrap';
 import './App.css';
 
 class App extends Component {
@@ -18,10 +18,10 @@ class App extends Component {
           top: 120,
           width: 40,
           ui: {
-            top: 0,
-            left: 0,
-            width: 0,
-            height: 0
+            top: 120,
+            left: 267,
+            width: 40,
+            height: 25
           }
         },
         {
@@ -32,10 +32,10 @@ class App extends Component {
           top: 60,
           width: 60,
           ui: {
-            top: 0,
-            left: 0,
-            width: 0,
-            height: 0
+            top: 60,
+            left: 30,
+            width: 60,
+            height: 20
           }
         }
       ],
@@ -103,7 +103,6 @@ class App extends Component {
     console.log('Image size is: ' + this.imgRef.current.clientWidth + 'x' + this.imgRef.current.clientHeight);
     console.log('Image Actual is: ' + this.imgRef.current.naturalWidth + 'x' + this.imgRef.current.naturalHeight);
 
-    let left = Math.random() * this.imgRef.current.naturalWidth;
     let top = Math.random() * this.imgRef.current.naturalHeight;
     let items = this.state.items;
     let updatedItems = items.concat({
